@@ -1,0 +1,92 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f5f9;
+    color: #202938;
+}
+
+.container {
+    width: min(700px, 92%);
+    margin: 40px auto;
+}
+
+header {
+    margin-bottom: 24px;
+}
+
+header p {
+    color: #697386;
+}
+
+.card,
+.total-card {
+    padding: 24px;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px #1720330d;
+}
+
+.total-card {
+    background: #172d4d;
+    color: white;
+}
+
+.total-card p {
+    margin-top: 0;
+}
+
+.total-card h2 {
+    font-size: 32px;
+    margin-bottom: 0;
+}
+
+form {
+    display: grid;
+    gap: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d4dbe5;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+button {
+    margin-top: 8px;
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+#expense-list {
+    padding: 0;
+    list-style: none;
+}
+
+#expense-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid #e5e9f0;
+}
+
+#message {
+    color: #2563eb;
+}

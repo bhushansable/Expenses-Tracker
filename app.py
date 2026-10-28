@@ -1,10 +1,13 @@
+# This is a simple expenses tracker application that allows users to register, log in, add expenses, and check their total expenses. The application uses SQLite as the database to store user information and expense data.
 
 import sqlite3
 
+# Database setup
 DB ='Expenses_data.DB'
 conn = sqlite3.connect(DB)
 cursor = conn.cursor()
 
+# Create users table if it doesn't exist
 cursor.execute(
     ''' CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -13,7 +16,7 @@ cursor.execute(
         password VANCHAR(10) NOT NULL
         )
 ''')
-
+# Create expenses table if it doesn't exist
 cursor.execute(
     ''' CREATE TABLE IF NOT EXISTS ex_data(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,6 +30,7 @@ cursor.execute(
 
 conn.commit()
 
+#  child of main Function to register a new user
 def register(name,email,password):
     with sqlite3.connect(DB) as conn:
         cursor = conn.cursor()
@@ -37,7 +41,7 @@ def register(name,email,password):
         
         conn.commit()
 
-
+# child of main Function to login an existing user
 def login(email,password):
     with sqlite3.connect(DB) as conn:
         cursor = conn.cursor()
@@ -56,6 +60,22 @@ def login(email,password):
 
         conn.commit()
 
+def verify_user(email ,password):
+     with sqlite3.connect(DB) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                ''' SELECT * FROM users
+                WHERE email =? AND password =?''',(email,password)
+            )
+            result = cursor.fetchone()
+    
+            if result:
+                return result[0]
+           
+            return None
+     
+
+# child of expenses Function to add a new expense for the logged-in user
 def add(user_id,category,iteam_name,iteam_price):
     with sqlite3.connect(DB) as conn:
         cursor = conn.cursor()
@@ -65,6 +85,24 @@ def add(user_id,category,iteam_name,iteam_price):
          )
         conn.commit()
 
+
+def get_expenses(user_id):
+    with sqlite3.connect(DB) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT id, category, iteam_name, iteam_price
+            FROM ex_data
+            WHERE user_id = ?
+            """,
+            (user_id,)
+        )
+
+        return cursor.fetchall()
+
+    
+# child of expenses Function to check the total expenses for the logged-in user
 def check_expen(user_id):
     with sqlite3.connect(DB) as conn:
         cursor = conn.cursor()
@@ -74,12 +112,11 @@ def check_expen(user_id):
                   WHERE user_id =? ''',(user_id,)
          )
 
-        total = cursor.fetchone()
-        for total_ex in total:
-            print("Total Expenses:", total_ex or 0)
+        return cursor.fetchone() or 0
+       
             
 
-
+# child of login Function to manage expenses for the logged-in user
 def expenses(user_id):
     while True:
         print("Welcome to Expenses Tracker")
@@ -108,8 +145,7 @@ def expenses(user_id):
             print("Invalide option try agian")
 
 
-
-        
+# This is the main function that serves as the entry point of the application. It provides a menu for users to register, log in, or exit the application.
 def main():
     while True:
         print("Welcome to Expenses Tracker")
@@ -144,3 +180,5 @@ def main():
 if __name__ == '__main__' :
     main()
 
+
+# SO this is a simple expenses tracker application that allows users to register, log in, add expenses, and check their total expenses. The application uses SQLite as the database to store user information and expense data.
