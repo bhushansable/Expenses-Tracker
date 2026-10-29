@@ -1,78 +1,116 @@
-
 const API_URL = "http://127.0.0.1:8000";
-const USER_ID = 1;
 
-const form = document.getElementById("expense-form");
-const expenseList = document.getElementById("expense-list");
-const totalElement = document.getElementById("total");
-const message = document.getElementById("message");
+const userID = sessionStorage.getItem("user_id");
+
+const expenseForm = document.getElementById("Expens_form");
+const expenseList = document.getElementById("expens_list");
+const expenseTotal = document.getElementById("total-Expenses");
+
+function showMessage(text, color = "red") {
+    const message = document.getElementById("expense-message");
+
+    if (message) {
+        message.textContent = text;
+        message.style.color = color;
+    }
+}
+
+function formatMoney(amount) {
+    return Number(amount ?? 0).toLocaleString("en-IN", {
+        style: "currency",
+        currency: "INR"
+    });
+}
+
+async function readResponse(response) {
+    const data = await response.json();
+
+    if (!response.ok) {
+        const detail = data.detail;
+
+        throw new Error(
+            typeof detail === "string"
+                ? detail
+                : JSON.stringify(detail || "Request failed")
+        );
+    }
+
+    return data;
+}
 
 async function loadExpenses() {
     try {
         const response = await fetch(
-            `${API_URL}/expense/${USER_ID}`
+            `${API_URL}/expense/${encodeURIComponent(userID)}`
         );
 
-        if (!response.ok) {
-            throw new Error("Could not load expenses");
-        }
+        // api.py returns { user_id: ..., expenses: [...] }
+        const data = await readResponse(response);
+        const expenses = data.expenses;
 
-        const data = await response.json();
+        if (!Array.isArray(expenses)) {
+            throw new Error("Unexpected expenses response from API.");
+        }
 
         expenseList.replaceChildren();
 
-        data.expenses.forEach((expense) => {
-            const li = document.createElement("li");
-            const details = document.createElement("span");
-            const price = document.createElement("strong");
+        if (expenses.length === 0) {
+            const item = document.createElement("li");
+            item.textContent = "No expenses yet.";
+            expenseList.appendChild(item);
+        } else {
+            expenses.forEach(function (expense) {
+                const category = expense.category;
+                const itemName = expense.item_name;
+                const price = expense.item_price;
 
-            details.textContent =
-                `${expense.category} — ${expense.item_name}`;
-            price.textContent = `₹${expense.item_price}`;
+                const li = document.createElement("li");
 
-            li.append(details, price);
-            expenseList.appendChild(li);
-        });
+                const details = document.createElement("span");
+                details.textContent = `${category} - ${itemName}`;
+
+                const amount = document.createElement("strong");
+                amount.textContent = formatMoney(price);
+
+                li.append(details, amount);
+                expenseList.appendChild(li);
+            });
+        }
 
         await loadTotal();
+
     } catch (error) {
-        message.textContent = error.message;
+        showMessage(error.message);
     }
 }
 
 async function loadTotal() {
     const response = await fetch(
-        `${API_URL}/expense/expense_total/${USER_ID}`
+        `${API_URL}/expense/expense_total/${encodeURIComponent(userID)}`
     );
 
-    if (!response.ok) {
-        throw new Error("Could not load total expenses");
-    }
+    const data = await readResponse(response);
 
-    const data = await response.json();
-    totalElement.textContent =
-        `₹${Number(data.total_expenses).toFixed(2)}`;
+    // Matches the key returned by your current api.py.
+    expenseTotal.textContent = formatMoney(data["total expense"] ?? 0);
 }
 
-form.addEventListener("submit", async (event) => {
+expenseForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const expense = {
-        user_id: USER_ID,
-        category: document.getElementById("category").value.trim(),
-        item_name: document.getElementById("item-name").value.trim(),
-        item_price: Number(
-            document.getElementById("item-price").value
-        )
-    };
+    const category = document.getElementById("category").value.trim();
+    const itemName = document.getElementById("iteam_name").value.trim();
+    const itemPrice = Number(
+        document.getElementById("iteam_price").value
+    );
 
     if (
-        !expense.category ||
-        !expense.item_name ||
-        !Number.isFinite(expense.item_price) ||
-        expense.item_price <= 0
+        !category ||
+        !itemName ||
+        !Number.isFinite(itemPrice) ||
+        itemPrice <= 0
     ) {
-        message.textContent = "Please enter valid expense details.";
+        showMessage("Enter valid expense details.");
         return;
     }
 
@@ -82,25 +120,30 @@ form.addEventListener("submit", async (event) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(expense)
+            body: JSON.stringify({
+                user_id: Number(userID),
+                category: category,
+                item_name: itemName,
+                item_price: itemPrice
+            })
         });
 
-        const data = await response.json();
+        await readResponse(response);
 
-        if (!response.ok) {
-            throw new Error(data.detail || "Could not save expense");
-        }
+        expenseForm.reset();
+        showMessage("Expense added successfully.", "green");
 
-        message.textContent = "Expense added successfully.";
-        form.reset();
         await loadExpenses();
+
     } catch (error) {
-        message.textContent =
-            `${error.message}. Check whether the API server is running.`;
+        showMessage(error.message);
     }
 });
 
-document.getElementById("refresh-btn")
-    .addEventListener("click", loadExpenses);
-
-loadExpenses();
+// Validate the saved ID before requesting expenses.
+if (!userID || !Number.isInteger(Number(userID))) {
+    sessionStorage.removeItem("user_id");
+    window.location.replace("/forntend/login.html");
+} else {
+    loadExpenses();
+}

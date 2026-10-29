@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expens Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login_contanier">
+        <header>
+        <h1>Expenses Tracker</h1>
+        <p>Manage Your Money</p>
+        </header>
+
+        <div class="tabs">
+            <button type="button" id="login_tab" class="active"> Login </button>
+
+            <button type="button" id="register_tab">Register</button>
+        </div>
+
+        <!-- login -->
+
+        <form id="login_form">
+            <h2>Welcome Back</h2>
+            <p>Login To Manage Your Expenses</p>
+
+            <label for="login_email">Email</label>
+            <input 
+            type="email"
+            id="login_email"
+            name="email"
+            placeholder="Enter Your Email"
+            required
+        >
+            
+           <label for="login_password">Password</label>
+           <input 
+           type="password"
+           id="login_password"
+           name="password"
+           placeholder="Enter Your Password"
+           required
+           >
+
+           <button type="submit">Login</button>
+         </form>
+
+    <!-- register form -->
+     <form id="register_form" hidden>
+        <h2>Create Your Account</h2>
+        <p>Track Your Daily Expens</p>
+
+        <label for="register_name">Full Name</label>
+        <input 
+        type="text"
+        id="register_name"
+        name="name"
+        placeholder="Enter Your Name"
+        required
+        >
+
+         <label for="register_email">Email</label>
+        <input 
+        type="email"
+        id="register_email"
+        name="email"
+        placeholder="Enter Your Email"
+        required
+        >
+
+         <label for="register_password">Password</label>
+        <input 
+        type="password"
+        id="register_password"
+        name="password"
+        placeholder="Enter Your password"
+        required
+        >
+
+        <button type="submit">Create Account</button>
+     </form>
+
+      <footer>
+            <p>Track spending. Build better habits.</p>
+        </footer>
+
+    </div>
+    <script src="login.js"></script>
+</body>
+</html>

@@ -1,8 +1,20 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 from app import add,get_expenses,check_expen , register as register_DB , verify_user
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500"
+    ],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Expense(BaseModel):
@@ -90,5 +102,5 @@ def login_user(user:Login):
         )
     return {
                "message": "login successfully",
-               "login": user
+               "user_id": user_id
            }
