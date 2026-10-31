@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
-from app import add,get_expenses,check_expen , register as register_DB , verify_user
+from app import add,get_expenses,check_expen , register as register_DB , verify_user , delete_user
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -90,6 +90,19 @@ def register_user(user : Register):
            "message": "Register successfully",
            "register": user
        }
+
+@app.delete("/delete-user")
+def delete_user_api( user : Login):
+    deleted = delete_user(user.email,user.password)
+
+    if deleted is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid email or password"
+        )
+    return{
+        "message":"delete user form database"
+    }
 
 @app.post("/login")
 def login_user(user:Login):

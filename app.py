@@ -73,7 +73,15 @@ def verify_user(email ,password):
                 return result[0]
            
             return None
-     
+
+def delete_user(email , password):
+    with sqlite3.connect(DB) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            ''' DELETE FROM users WHERE email = ? and password =? ''',(email,password)
+        )
+
+        return cursor.rowcount 
 
 # child of expenses Function to add a new expense for the logged-in user
 def add(user_id,category,iteam_name,iteam_price):
@@ -117,68 +125,68 @@ def check_expen(user_id):
             
 
 # child of login Function to manage expenses for the logged-in user
-def expenses(user_id):
-    while True:
-        print("Welcome to Expenses Tracker")
-        print("\n")
-        print("1. Add Iteam")
-        print("2. Check Expenses ")
-        print("3. Exists")
-        print("\n")
+# def expenses(user_id):
+#     while True:
+#         print("Welcome to Expenses Tracker")
+#         print("\n")
+#         print("1. Add Iteam")
+#         print("2. Check Expenses ")
+#         print("3. Exists")
+#         print("\n")
 
-        user =int(input("Enter your option ----> "))
+#         user =int(input("Enter your option ----> "))
 
-        if user == 1:
-            category =input("Enter your categroy ---> ")
-            iteam_name =input("Enter your iteam name ---> ")
-            iteam_price =input("Enter your iteam price  ---> ")
+#         if user == 1:
+#             category =input("Enter your categroy ---> ")
+#             iteam_name =input("Enter your iteam name ---> ")
+#             iteam_price =input("Enter your iteam price  ---> ")
 
-            add(user_id,category,iteam_name,iteam_price)
+#             add(user_id,category,iteam_name,iteam_price)
 
-        elif user == 2:
-            check_expen(user_id)
+#         elif user == 2:
+#             check_expen(user_id)
 
-        elif user == 3:
-            break
+#         elif user == 3:
+#             break
 
-        else:
-            print("Invalide option try agian")
-
-
-# This is the main function that serves as the entry point of the application. It provides a menu for users to register, log in, or exit the application.
-def main():
-    while True:
-        print("Welcome to Expenses Tracker")
-        print("\n")
-        print("1. Resigerter")
-        print("2. Login")
-        print("3. Exists")
-        print("\n")
-
-        user =int(input("Enter your option ----> "))
-
-        if user == 1:
-            name = input("Enter your name ---> ")
-            email = (input("Enter your email ---> "))
-            password = (input("Enter your password ---> "))
-
-            register(name,email,password)
-
-        elif user == 2:
-            email = (input("Enter your email ---> "))
-            password = (input("Enter your password ---> "))
-
-            login(email,password)
-
-        elif user == 3:
-            break
-
-        else:
-            print("Invaide option please try agian")
+#         else:
+#             print("Invalide option try agian")
 
 
-if __name__ == '__main__' :
-    main()
+# # This is the main function that serves as the entry point of the application. It provides a menu for users to register, log in, or exit the application.
+# def main():
+#     while True:
+#         print("Welcome to Expenses Tracker")
+#         print("\n")
+#         print("1. Resigerter")
+#         print("2. Login")
+#         print("3. Exists")
+#         print("\n")
+
+#         user =int(input("Enter your option ----> "))
+
+#         if user == 1:
+#             name = input("Enter your name ---> ")
+#             email = (input("Enter your email ---> "))
+#             password = (input("Enter your password ---> "))
+
+#             register(name,email,password)
+
+#         elif user == 2:
+#             email = (input("Enter your email ---> "))
+#             password = (input("Enter your password ---> "))
+
+#             login(email,password)
+
+#         elif user == 3:
+#             break
+
+#         else:
+#             print("Invaide option please try agian")
+
+
+# if __name__ == '__main__' :
+#     main()
 
 
 # SO this is a simple expenses tracker application that allows users to register, log in, add expenses, and check their total expenses. The application uses SQLite as the database to store user information and expense data.
