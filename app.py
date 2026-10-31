@@ -42,23 +42,23 @@ def register(name,email,password):
         conn.commit()
 
 # child of main Function to login an existing user
-def login(email,password):
-    with sqlite3.connect(DB) as conn:
-        cursor = conn.cursor()
-        cursor.execute(
-            ''' SELECT * FROM users
-            WHERE email =? AND password =?''',(email,password)
-        )
-        result = cursor.fetchone()
+# def login(email,password):
+#     with sqlite3.connect(DB) as conn:
+#         cursor = conn.cursor()
+#         cursor.execute(
+#             ''' SELECT * FROM users
+#             WHERE email =? AND password =?''',(email,password)
+#         )
+#         result = cursor.fetchone()
 
-        if result:
-            print("Login succuseful")
-            user_id = result[0]
-            expenses(user_id)
-        else:
-            print("Invalide email or passwords try agian")
+#         if result:
+#             print("Login succuseful")
+#             user_id = result[0]
+#             expenses(user_id)
+#         else:
+#             print("Invalide email or passwords try agian")
 
-        conn.commit()
+#         conn.commit()
 
 def verify_user(email ,password):
      with sqlite3.connect(DB) as conn:
