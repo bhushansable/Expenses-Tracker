@@ -3,6 +3,7 @@ const registerTab = document.getElementById("register_tab");
 
 const loginForm = document.getElementById("login_form");
 const registerForm = document.getElementById("register_form");
+const deletbt = document.getElementById("Delete_but")
 
 const Api_URL = "http://127.0.0.1:8000";
 const message = document.getElementById("message");
@@ -11,6 +12,7 @@ const message = document.getElementById("message");
 loginTab.addEventListener("click", function () {
     loginForm.hidden = false;
     registerForm.hidden = true;
+    deletbt.hidden = false;
 
     loginTab.classList.add("active");
     registerTab.classList.remove("active");
@@ -20,6 +22,7 @@ loginTab.addEventListener("click", function () {
 registerTab.addEventListener("click", function () {
     registerForm.hidden = false;
     loginForm.hidden = true;
+    deletbt.hidden = true;
 
     registerTab.classList.add("active");
     loginTab.classList.remove("active");
@@ -115,3 +118,54 @@ window.location.href = "/forntend/expense.html";
         showMessage(error.message || "Cannot connect to server.");
     }
 });
+
+
+const deletBtn = document.getElementById("Delete_but")
+
+deletBtn.addEventListener("click",async () => {
+
+    const email = document.getElementById("login_email").value.trim();
+    const password = document.getElementById("login_password").value;
+
+    console.log({
+    email: email,
+    password: password
+});
+
+
+    if(!email || !password){
+        alert("Enter Right email password");
+        return;
+    }
+
+    try{
+        const response = await fetch(`${Api_URL}/delete-user`,{
+            method : "DELETE",
+            headers :{
+                "Content-Type":"application/json"
+            },
+            body : JSON.stringify({
+                email : email ,
+                password : password
+            }
+            )
+        });
+
+        const data = await response.json();
+
+        console.log("Status:", response.status);
+        console.log("FastAPI error:", data);
+        console.log("Validation error:", data.detail[0]);
+
+        if(!response.ok){
+            throw new error("data falid")
+        }
+
+        sessionStorage.clear();
+        Window.location.href("login.html")
+
+    }catch(error){
+        showMessage(error.message || 'cannot connect to server')
+    }
+    
+})

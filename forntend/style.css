@@ -17,6 +17,21 @@ body {
     color: #1e293b;
 }
 
+
+#Delete_but{ flex: 1;
+    background: none;
+    background: transparent;
+    color: #edeff1ce;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-top: 20px;
+    background-color: #1d4ed8;
+}
+
 /* Main container */
 .login_container {
     width: 100%;

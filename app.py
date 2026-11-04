@@ -93,6 +93,14 @@ def add(user_id,category,iteam_name,iteam_price):
          )
         conn.commit()
 
+def delete_expense(user_id):
+    with sqlite3.connect(DB) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            ''' Delete FROM ex_data WHERE user_id =? ''',(user_id,))
+
+        return cursor.rowcount
+
 
 def get_expenses(user_id):
     with sqlite3.connect(DB) as conn:

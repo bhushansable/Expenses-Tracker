@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
-from app import add,get_expenses,check_expen , register as register_DB , verify_user , delete_user
+from app import add,get_expenses,check_expen , register as register_DB , verify_user , delete_user ,delete_expense
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -48,6 +48,15 @@ def add_expense(expense: Expense):
     return {
         "message": "Expense saved successfully",
         "expense": expense
+    }
+
+@app.delete("/expenses/{user_id}")
+def delete_exp_api(user_id : int):
+    deleted = delete_expense(user_id)
+
+    return {
+        "message": "Expenses deleted successfully",
+        "deleted_count": deleted
     }
 
 @app.get("/expense/{user_id}")
